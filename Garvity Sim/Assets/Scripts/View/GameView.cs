@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.View
@@ -19,12 +20,23 @@ namespace Assets.Scripts.View
 
         public GameObject FocusGameObject;
 
+        public bool CenterPlanets;
+
+        bool started;
+
         private void Awake()
+        {
+            //StartSim();
+            started = false;
+        }
+
+        public void StartSim()
         {
             gravityGameObjects = GameObject.FindGameObjectsWithTag("GravityObject");
             vectorUtilities = new VectorUtilities();
 
             GenerateGravityObjects();
+            started = true;
         }
 
         private void GenerateGravityObjects()
@@ -35,7 +47,7 @@ namespace Assets.Scripts.View
 
             for (int i = 0; i < gravityObjects.Length; i++)
             {
-                if(gravityGameObjects[i] == FocusGameObject)
+                if (gravityGameObjects[i] == FocusGameObject)
                 {
                     centerIndex = i;
                 }
@@ -51,27 +63,39 @@ namespace Assets.Scripts.View
                 gravityObjects[i] = new GravityObjectModel(properties.Mass, position, velocity);
             }
 
-            gameController = new GameController(gravityObjects, centerIndex);
+            if(!CenterPlanets)
+            {
+                centerIndex = -1;
+            }
+
+            gameController = new GameController(gravityObjects, centerIndex); //centerIndex
         }
 
         private void FixedUpdate()
         {
-            gameController.UpdatePositions();
+            if (started)
+            {
+                gameController.UpdatePositions();
 
-            Debug.Log(gameController.GravityObjects[0].Position);
-
-            UpdateGameObjectPositions();
+                UpdateGameObjectPositions();
+            }
         }
 
         private void UpdateGameObjectPositions()
         {
             for (int i = 0; i < gravityGameObjects.Length; i++)
             {
-                Vector3 vector3 = new Vector3();
+                Vector3 pos = new Vector3();
 
-                vectorUtilities.MakeFristVectorEqualSecondVector(ref vector3, gameController.GravityObjects[i].Position);
+                vectorUtilities.MakeFristVectorEqualSecondVector(ref pos, gameController.GravityObjects[i].Position);
 
-                gravityGameObjects[i].transform.position = vector3;
+                Vector3 velocity = new Vector3();
+
+                vectorUtilities.MakeFristVectorEqualSecondVector(ref velocity, gameController.GravityObjects[i].Velocity);
+
+                gravityGameObjects[i].GetComponent<GravityGameObjectProperties>().StartVelocity = velocity;
+
+                gravityGameObjects[i].transform.position = pos;
             }
         }
     }

@@ -21,7 +21,7 @@ namespace Assets.Scripts.Controllers
             gravityObjectService = new GravityObjectService();
             CenterIndex = centerIndex;
         }
-
+        
         public void UpdatePositions()
         {
             foreach (var gravityObject in GravityObjects)
@@ -29,18 +29,27 @@ namespace Assets.Scripts.Controllers
                 gravityObjectService.UpdateVelocity(gravityObject, GravityObjects);
             }
 
-            foreach (var gravityObject in GravityObjects)
+            for (int i = 0; i < GravityObjects.Length; i++)
             {
                 if (CenterIndex != -1)
                 {
-                    gravityObjectService.UpdatePosition(gravityObject, GravityObjects[CenterIndex].Position);
+                    if (CenterIndex != i)
+                    {
+                        gravityObjectService.UpdatePosition(GravityObjects[i], GravityObjects[CenterIndex].Position);
+                    }
                 }
 
                 if (CenterIndex == -1)
                 {
-                    gravityObjectService.UpdatePosition(gravityObject, GravityObjects[CenterIndex].Position);
+                    gravityObjectService.UpdatePosition(GravityObjects[i]);
                 }
             }
+
+            if (CenterIndex != -1)
+            {
+                gravityObjectService.UpdatePosition(GravityObjects[CenterIndex], GravityObjects[CenterIndex].Position);
+            }
         }
+
     }
 }

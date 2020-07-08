@@ -25,5 +25,10 @@ namespace Assets.Scripts.Services
         {
             return vectorUtilities.VectorSqrMagnitude(vector);
         }
+
+        public float Distance(Vector a, Vector b)
+        {
+            return (float)Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
+        }
     }
 }

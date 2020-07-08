@@ -106,4 +106,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Mass: 100
+  Radius: 1
   StartVelocity: {x: 0, y: 0, z: 0}

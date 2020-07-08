@@ -13,7 +13,7 @@ namespace Assets.Scripts.Services
         private VectorService vectorService;
 
         const float gravitationalConstant = 1f;
-        const float physicsTimeStep = 0.001f;
+        const float physicsTimeStep = 0.01f;
 
         public GravityObjectService()
         {
@@ -30,7 +30,7 @@ namespace Assets.Scripts.Services
                     Vector forceDir = vectorService.Normilize(objects[i].Position - objectNow.Position);
                     Vector force = forceDir * gravitationalConstant * objectNow.Mass * objects[i].Mass / sqrtDst;
                     Vector acceleration = force / objectNow.Mass;
-                    objectNow.Velocity = objectNow.Velocity + force * physicsTimeStep;
+                    objectNow.Velocity = objectNow.Velocity + acceleration * physicsTimeStep;
                 }
             }
         }
